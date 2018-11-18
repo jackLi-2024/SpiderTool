@@ -9,5 +9,3 @@ Description:
     if you wish print your logging to you stdout
         please add a logging filename or use import LogTool
 """
-import Browser
-import Request

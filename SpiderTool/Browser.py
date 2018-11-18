@@ -3,8 +3,7 @@
 
 """
 File:   Browser.py
-Author: Lijiacai (v_lijiacai@baidu.com)
-Date: 2018-xx-xx
+Author: Lijiacai(1050518702@qq.com)
 Description:
     模拟浏览器的driver(Firefox,Chrome,PhantoJS),user can add other function
 """

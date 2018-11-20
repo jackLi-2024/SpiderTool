@@ -7,5 +7,5 @@ Author: Lijiacai(1050518702@qq.com)
 Description:
     this package provide BROWSER and REQUEST
     if you wish print your logging to you stdout
-        please add a logging filename or use import LogTool
+        please add a logging filename or use import loggingtool
 """

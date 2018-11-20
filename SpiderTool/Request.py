@@ -4,10 +4,11 @@
 """
 File:   Request.py
 Author: Lijiacai (1050518702@qq.com)
-Date: 2018-xx-xx
+Date: 2018-11-20
 Description:
-    爬虫抓取的requests请求，主要扩展了重试机制，对于代理原因造成连接失败，可以重试连接，
-    并且同一个页面如果需要cookie，访问，则使用同一个spider即可。
+    The crawler crawls requests, which mainly extend the retry mechanism, 
+    can retry the connection for the proxy cause the connection failure.
+    And if the same page needs cookie and access, the same spider can be used.
 """
 import loggin
 import os
@@ -22,10 +23,10 @@ class Request(object):
 
     def __init__(self, proxies=None, try_time=5, frequence=0.1, timeout=20):
         """
-        :param proxies: 代理
-        :param try_time: 重试次数
-        :param frequence: 抓取频率
-        :param timeout: 超时
+        :param proxies: proxy agent
+        :param try_time: retry count
+        :param frequence: grasping frequency
+        :param timeout: timeout
         """
         self.proxies = proxies
         self.session = requests.Session()
@@ -36,8 +37,8 @@ class Request(object):
     def proxy(self):
         """
         get proxy
-        如果有其他代理，更改此处函数
-        :return: 返回一个ip：12.23.88.23:2345
+        If there are other agents, change the function here.
+        :return: return a ip：12.23.88.23:2345
         """
         if len(self.proxies) == 0:
             one_proxy = None
@@ -47,7 +48,7 @@ class Request(object):
             one_proxy = None
         return one_proxy
 
-    def request(self, method, url, response_encode="utf-8",
+    def request(self, method, url, response_status="",
                 params=None, data=None, headers=None, cookies=None, files=None,
                 auth=None, timeout=None, allow_redirects=True, proxies=None,
                 hooks=None, stream=None, verify=None, cert=None, json=None):
@@ -56,7 +57,7 @@ class Request(object):
 
                 :param method: method for the new :class:`Request` object.
                 :param url: URL for the new :class:`Request` object.
-                :param response_encode: response_encode for the new :class:`response` object.
+                :param response_status: response_status for the new :class:`response` object.
                 :param params: (optional) Dictionary or bytes to be sent in the query
                     string for the :class:`Request`.
                 :param data: (optional) Dictionary, list of tuples, bytes, or file-like
@@ -100,9 +101,9 @@ class Request(object):
                                                 hooks=hooks, stream=stream, verify=verify,
                                                 cert=cert,
                                                 json=json)
-                response.encoding = response_encode
-                result = response.text
-                return result
+                if response.status > response_status:
+                    continue
+                return response
             except Exception as e:
                 logging.exception("%s forbidden:%s" % (time.asctime(), str(e)))
             time.sleep(self.frequence)

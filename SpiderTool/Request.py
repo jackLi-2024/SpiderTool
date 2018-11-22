@@ -103,7 +103,8 @@ class Request(object):
                                                 hooks=hooks, stream=stream, verify=verify,
                                                 cert=cert,
                                                 json=json)
-                if response.status_code > response_status:
+                if str(response.status_code) > response_status:
+                    logging.info("response status:[%s]" % str(response.status_code))
                     continue
                 return response
             except Exception as e:

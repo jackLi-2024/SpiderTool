@@ -68,10 +68,12 @@ class Browser(object):
         """
         if not self.proxies:
             one_proxy = None
-        if type(self.proxies) == list:
+        elif type(self.proxies) == list:
             one_proxy = random.choice(self.proxies)
         else:
             one_proxy = None
+        if one_proxy == None:
+            logging.info("self ip")
         return one_proxy
 
     def FirefoxDriver(self):

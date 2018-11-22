@@ -4,9 +4,9 @@
 """
 File:  setup .py
 Author: Lijiacai (v_lijiacai@baidu.com)
-Date: 2018-11-20
+Date: 2018-11-22
 Description:
-    setip tool
+    setup tool
 """
 
 import os
@@ -20,7 +20,7 @@ from setuptools import find_packages
 
 setup(
     name="SpiderTool",
-    version="18.11.19",
+    version="18.11.22",
     keywords=("pip", "SpiderTool", "spider"),
     description="The package for Spider",
     long_description="Packing provides two types of crawlers, Browser and Request, " +

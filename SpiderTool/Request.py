@@ -10,7 +10,7 @@ Description:
     can retry the connection for the proxy cause the connection failure.
     And if the same page needs cookie and access, the same spider can be used.
 """
-import loggin
+import logging
 import os
 import random
 import sys
@@ -40,7 +40,7 @@ class Request(object):
         If there are other agents, change the function here.
         :return: return a ip：12.23.88.23:2345
         """
-        if len(self.proxies) == 0:
+        if not self.proxies
             one_proxy = None
         elif type(self.proxies) == list:
             one_proxy = random.choice(self.proxies)
@@ -101,11 +101,11 @@ class Request(object):
                                                 hooks=hooks, stream=stream, verify=verify,
                                                 cert=cert,
                                                 json=json)
-                if response.status > response_status:
+                if response.status_code > response_status:
                     continue
                 return response
             except Exception as e:
-                logging.exception("%s forbidden:%s" % (time.asctime(), str(e)))
+                logging.exception("%s network error:%s" % (time.asctime(), str(e)))
             time.sleep(self.frequence)
 
     def get(self, url, **kwargs):

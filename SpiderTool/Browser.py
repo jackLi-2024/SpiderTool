@@ -66,6 +66,8 @@ class Browser(object):
         如果有其他代理，更改此处函数
         :return: 返回一个ip：12.23.88.23:2345
         """
+        if not self.proxies:
+            one_proxy = None
         if type(self.proxies) == list:
             one_proxy = random.choice(self.proxies)
         else:

@@ -40,7 +40,7 @@ class Request(object):
         If there are other agents, change the function here.
         :return: return a ip：12.23.88.23:2345
         """
-        if not self.proxies
+        if not self.proxies:
             one_proxy = None
         elif type(self.proxies) == list:
             one_proxy = random.choice(self.proxies)

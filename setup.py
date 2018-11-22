@@ -3,7 +3,7 @@
 
 """
 File:  setup .py
-Author: Lijiacai (v_lijiacai@baidu.com)
+Author: Lijiacai (1050518702@qq.com)
 Date: 2018-11-22
 Description:
     setup tool
@@ -20,7 +20,7 @@ from setuptools import find_packages
 
 setup(
     name="SpiderTool",
-    version="18.11.22",
+    version="18.11.23",
     keywords=("pip", "SpiderTool", "spider"),
     description="The package for Spider",
     long_description="Packing provides two types of crawlers, Browser and Request, " +

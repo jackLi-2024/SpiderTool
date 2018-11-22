@@ -46,6 +46,8 @@ class Request(object):
             one_proxy = random.choice(self.proxies)
         else:
             one_proxy = None
+        if one_proxy == None:
+            logging.info("self ip")
         return one_proxy
 
     def request(self, method, url, response_status="",

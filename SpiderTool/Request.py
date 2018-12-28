@@ -92,6 +92,8 @@ class Request(object):
                 :rtype: requests.Response
                 """
         for try_time in range(self.try_time):
+            one_proxy = self.proxy()
+            one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
             try:
                 response = self.session.request(method, url,
                                                 params=params, data=data, headers=headers,
@@ -99,7 +101,7 @@ class Request(object):
                                                 files=files,
                                                 auth=auth, timeout=timeout,
                                                 allow_redirects=allow_redirects,
-                                                proxies=self.proxy(),
+                                                proxies=one_proxy,
                                                 hooks=hooks, stream=stream, verify=verify,
                                                 cert=cert,
                                                 json=json)

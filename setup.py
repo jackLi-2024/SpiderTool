@@ -20,7 +20,7 @@ from setuptools import find_packages
 
 setup(
     name="SpiderTool",
-    version="18.12.28",
+    version="18.12.29",
     keywords=("pip", "SpiderTool", "spider"),
     description="The package for Spider",
     long_description="Packing provides two types of crawlers, Browser and Request, " +

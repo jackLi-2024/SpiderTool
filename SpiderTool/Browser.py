@@ -142,6 +142,7 @@ class Browser(object):
                                              desired_capabilities=desired_capabilities,
                                              service_args=['--ignore-ssl-errors=true',
                                                            "--cookies-file=cookie.txt"])
+        return browser_driver
 
     def get(self, url):
         """

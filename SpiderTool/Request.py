@@ -50,7 +50,7 @@ class Request(object):
             logging.info("self ip")
         return one_proxy
 
-    def request(self, method, url, response_status="",
+    def request(self, method, url, response_status="500",
                 params=None, data=None, headers=None, cookies=None, files=None,
                 auth=None, timeout=None, allow_redirects=True, proxies=None,
                 hooks=None, stream=None, verify=None, cert=None, json=None):
@@ -92,8 +92,14 @@ class Request(object):
                 :rtype: requests.Response
                 """
         for try_time in range(self.try_time):
-            one_proxy = self.proxy()
-            one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
+            one_proxy_ = self.proxy()
+	    one_proxy = one_proxy_
+	    if one_proxy == None:
+		logging.info("ip-->None")
+	    else:
+		logging.info("ip-->%s" % one_proxy)
+                one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
+		
             try:
                 response = self.session.request(method, url,
                                                 params=params, data=data, headers=headers,
@@ -108,6 +114,7 @@ class Request(object):
                 if str(response.status_code) > response_status:
                     logging.info("response status:[%s]" % str(response.status_code))
                     continue
+		response.proxy = one_proxy_
                 return response
             except Exception as e:
                 logging.exception("%s network error:%s" % (time.asctime(), str(e)))
@@ -196,8 +203,10 @@ class Request(object):
 
 def test():
     """unittest"""
-    spider = Request(proxies=["a"])
-    print(spider.get(url="https://www.baidu.com"))
+    spider = Request(proxies=[])
+    res = (spider.get(url="https://www.baidu.com"))
+    print(res)
+    print(res.proxy)
 
 
 if __name__ == '__main__':

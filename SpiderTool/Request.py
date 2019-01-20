@@ -16,6 +16,7 @@ import random
 import sys
 import time
 import requests
+from requests import Response
 
 
 class Request(object):
@@ -119,6 +120,10 @@ class Request(object):
             except Exception as e:
                 logging.exception("%s network error:%s" % (time.asctime(), str(e)))
             time.sleep(self.frequence)
+	response = Response()
+	response.proxy = "Response Error"
+	return response
+	
 
     def get(self, url, **kwargs):
         r"""Sends a GET request. Returns :class:`Response` object.

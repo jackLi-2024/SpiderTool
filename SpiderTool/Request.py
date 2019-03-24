@@ -47,8 +47,8 @@ class Request(object):
             one_proxy = random.choice(self.proxies)
         else:
             one_proxy = None
-        if one_proxy == None:
-            logging.info("self ip")
+        #if one_proxy == None:
+            #logging.info("self ip")
         return one_proxy
 
     def request(self, method, url, response_status="500",
@@ -96,9 +96,10 @@ class Request(object):
             one_proxy_ = self.proxy()
 	    one_proxy = one_proxy_
 	    if one_proxy == None:
-		logging.info("ip-->None")
+		pass
+		#logging.info("ip-->None")
 	    else:
-		logging.info("ip-->%s" % one_proxy)
+		#logging.info("ip-->%s" % one_proxy)
                 one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
 		
             try:
@@ -113,12 +114,13 @@ class Request(object):
                                                 cert=cert,
                                                 json=json)
                 if str(response.status_code) > response_status:
-                    logging.info("response status:[%s]" % str(response.status_code))
+                    #logging.info("response status:[%s]" % str(response.status_code))
                     continue
 		response.proxy = one_proxy_
                 return response
             except Exception as e:
-                logging.exception("%s network error:%s" % (time.asctime(), str(e)))
+		pass
+                #logging.exception("%s network error:%s" % (time.asctime(), str(e)))
             time.sleep(self.frequence)
 	response = Response()
 	response.proxy = "Response Error"

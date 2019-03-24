@@ -7,7 +7,7 @@ Author: Lijiacai(1050518702@qq.com)
 Description:
     模拟浏览器的driver(Firefox,Chrome,PhantoJS),user can add other function
 """
-
+import re
 import os
 import random
 import sys
@@ -57,6 +57,11 @@ class Browser(object):
             if not self.executable_path:
                 raise ("*****please add PhantomJS executable_path*****")
             self.browser = self.PhantomJSDriver()
+	elif re.findall("Remote-", browser_type):
+            _type = browser_type.split("-")[1].upper()
+            if not self.executable_path:
+                raise ("****please add Remote executable_path****")
+            self.browser = self.Remote(_type)
         else:
             raise ("*****please use Firefox or Chrome or PhantomJS for your browser*****")
 
@@ -142,6 +147,23 @@ class Browser(object):
                                              desired_capabilities=desired_capabilities,
                                              service_args=['--ignore-ssl-errors=true',
                                                            "--cookies-file=cookie.txt"])
+        return browser_driver
+
+    def Remote(self, _type):
+        """
+        create a remote browser
+        """
+        desired_capabilities = eval("DesiredCapabilities.%s" % _type)
+        desired_capabilities["phantomjs.page.settings.loadImages"] = False
+        if self.proxies:
+            proxy = webdriver.Proxy()
+            proxy.proxy_type = ProxyType.MANUAL
+            proxy.http_proxy = self.proxy()
+            proxy.add_to_capabilities(desired_capabilities)
+        browser_driver = webdriver.Remote(command_executor=self.executable_path,
+                                          desired_capabilities=desired_capabilities)
+        browser_driver.set_page_load_timeout(self.timeout)
+        browser_driver.set_script_timeout(self.timeout)
         return browser_driver
 
     def get(self, url):
@@ -319,6 +341,12 @@ def test_chrome():
     B.sleep_wait(2)
     print(B.page_source())
 
+def test_remote():
+    """unittest"""
+    driver=Browser(browser_type="Remote-Chrome", headless=False, timeout=100,executable_path="http://127.0.0.1:4444/wd/hub")
+    driver.get("https://www.nike.com/cn/launch/t/air-max-95-premium-throwback-future/")
+    print(driver.browser.title.encode("utf8"))
+    driver.close()
 
 if __name__ == '__main__':
     # test_firefox()

@@ -142,6 +142,7 @@ class Browser(object):
             proxy = webdriver.Proxy()
             proxy.proxy_type = ProxyType.MANUAL
             proxy.http_proxy = self.proxy()
+	    proxy.ssl_proxy = self.proxy()
             proxy.add_to_capabilities(desired_capabilities)
         browser_driver = webdriver.PhantomJS(executable_path=self.executable_path,
                                              desired_capabilities=desired_capabilities,
@@ -159,6 +160,7 @@ class Browser(object):
             proxy = webdriver.Proxy()
             proxy.proxy_type = ProxyType.MANUAL
             proxy.http_proxy = self.proxy()
+            proxy.ssl_prpxy = self.proxy()
             proxy.add_to_capabilities(desired_capabilities)
         browser_driver = webdriver.Remote(command_executor=self.executable_path,
                                           desired_capabilities=desired_capabilities)

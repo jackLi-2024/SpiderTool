@@ -32,7 +32,7 @@ class Browser(object):
     """browser"""
 
     def __init__(self, proxies=None, headless=True, timeout=20, executable_path=None,
-                 browser_type=None):
+                 browser_type=None, interval_time=0.1):
         """
         init
         :param proxies: ip代理
@@ -40,10 +40,12 @@ class Browser(object):
         :param timeout: 超时
         :param executable_path: 浏览器驱动器
         :param browser_type: 浏览器类型
+        :param interval_time: 事件操作的间隔
         """
         self.proxies = proxies
         self.headless = headless
         self.timeout = timeout
+        self.interval_time = interval_time
         self.executable_path = executable_path
         if browser_type == "Firefox":
             if not self.executable_path:
@@ -180,6 +182,7 @@ class Browser(object):
         :return:
         """
         ActionChains(self.browser).move_to_element(elem).click().perform()
+        time.sleep(self.interval_time)
 
     def wait_for_element_loaded(self, type_name=None, elem_type=By.CLASS_NAME, wait_time=10):
         """
@@ -217,6 +220,7 @@ class Browser(object):
         :return:
         """
         elem.send_keys(value)
+        time.sleep(self.interval_time)
 
     def find_element(self, value, by):
         """
@@ -250,6 +254,7 @@ class Browser(object):
         :return:
         """
         elem.send_keys(keyboard)
+        time.sleep(self.interval_time)
 
     def clear(self, elem):
         """
@@ -258,6 +263,49 @@ class Browser(object):
         :return:
         """
         elem.clear()
+        time.sleep(self.interval_time)
+
+    def scroll(self, x=0, y=10000, method="Top"):
+        """
+        移动滚动条
+        :param x:
+        :param y:
+        :param method: 三种一定滚动方式：To,Top,By
+        :return:
+            scrollBy(x,y)中，x为必须参数，表示向右滚动的像素值；y也为必须参数，表示向下滚动的像素值
+            scrollTo(x,y) 中，x为必须参数，表示要在窗口文档显示区左上角显示的文档的x坐标；y也为必须参数，表示要在窗口文档显示区左上角显示的文档的y坐标
+        """
+        if method == "Top":
+            jscript = "document.documentElement.scrollTop=%d" % y
+        else:
+            jscript = "window.scroll%s(%d,%d)" % (method, x, y)
+        self.browser.execute_script(jscript)
+        time.sleep(self.interval_time)
+    
+    def screenshot(self, filename):
+        """
+        截屏
+        :param filename: 保存的文件名
+        :return:
+        """
+        self.browser.save_screenshot(filename)
+
+    def execute_script(self, script, *args):
+        """
+        执行javascript代码
+        :param script: js脚本
+        :return:
+        """
+        self.browser.execute_script(script, *args)
+
+    def drag_and_drop(self, start, end):
+        """
+        元素拖拽
+        :param start: 起点
+        :param stop: 终点
+        :return:
+        """
+        ActionChains(self.browser).drag_and_drop(start, end).perform()
 
     def close(self):
         """

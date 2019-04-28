@@ -94,13 +94,13 @@ class Request(object):
                 """
         for try_time in range(self.try_time):
             one_proxy_ = self.proxy()
-	    one_proxy = one_proxy_
-	    if one_proxy == None:
-		pass
+            one_proxy = one_proxy_
+            if one_proxy == None:
+                pass
 		#logging.info("ip-->None")
-	    else:
+            else:
 		#logging.info("ip-->%s" % one_proxy)
-                one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
+            one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
 		
             try:
                 response = self.session.request(method, url,
@@ -116,15 +116,15 @@ class Request(object):
                 if str(response.status_code) > response_status:
                     #logging.info("response status:[%s]" % str(response.status_code))
                     continue
-		response.proxy = one_proxy_
+                response.proxy = one_proxy_
                 return response
             except Exception as e:
-		pass
+                pass
                 #logging.exception("%s network error:%s" % (time.asctime(), str(e)))
             time.sleep(self.frequence)
-	response = Response()
-	response.proxy = "Response Error"
-	return response
+        response = Response()
+        response.proxy = "Response Error"
+        return response
 	
 
     def get(self, url, **kwargs):

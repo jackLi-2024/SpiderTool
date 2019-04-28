@@ -100,7 +100,7 @@ class Request(object):
 		#logging.info("ip-->None")
             else:
 		#logging.info("ip-->%s" % one_proxy)
-            one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
+                one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
 		
             try:
                 response = self.session.request(method, url,

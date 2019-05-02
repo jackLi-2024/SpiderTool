@@ -31,8 +31,14 @@ sys.path.append("%s/" % cur_dir)
 class Browser(object):
     """browser"""
 
-    def __init__(self, proxies=None, headless=True, timeout=20, executable_path=None,
-                 browser_type=None, interval_time=0.1):
+    def __init__(
+            self,
+            proxies=None,
+            headless=True,
+            timeout=20,
+            executable_path=None,
+            browser_type=None,
+            interval_time=0.1):
         """
         init
         :param proxies: ip代理
@@ -59,13 +65,14 @@ class Browser(object):
             if not self.executable_path:
                 raise ("*****please add PhantomJS executable_path*****")
             self.browser = self.PhantomJSDriver()
-	elif re.findall("Remote-", browser_type):
+        elif re.findall("Remote-", browser_type):
             _type = browser_type.split("-")[1].upper()
             if not self.executable_path:
                 raise ("****please add Remote executable_path****")
             self.browser = self.Remote(_type)
         else:
-            raise ("*****please use Firefox or Chrome or PhantomJS for your browser*****")
+            raise (
+                "*****please use Firefox or Chrome or PhantomJS for your browser*****")
 
     def proxy(self):
         """
@@ -75,11 +82,11 @@ class Browser(object):
         """
         if not self.proxies:
             one_proxy = None
-        elif type(self.proxies) == list:
+        elif isinstance(self.proxies, list):
             one_proxy = random.choice(self.proxies)
         else:
             one_proxy = None
-        if one_proxy == None:
+        if one_proxy is None:
             logging.info("self ip")
         return one_proxy
 
@@ -87,7 +94,7 @@ class Browser(object):
         """
         create a firefox browser
         """
-        if self.headless == True:
+        if self.headless:
             options = webdriver.FirefoxOptions()
             options.set_headless()
             options.add_argument('headless')
@@ -99,7 +106,8 @@ class Browser(object):
                         'httpProxy': self.proxy()  # 代理ip和端口
                     }
                 )
-                browser_driver = webdriver.Firefox(firefox_options=options, proxy=proxy)
+                browser_driver = webdriver.Firefox(
+                    firefox_options=options, proxy=proxy)
             else:
                 browser_driver = webdriver.Firefox(firefox_options=options)
         else:
@@ -122,12 +130,12 @@ class Browser(object):
         create a chrome browser
         """
         options = webdriver.ChromeOptions()
-        if self.headless == True:
+        if self.headless:
             options.set_headless()
             options.add_argument('headless')
             options.add_argument('--disable-gpu')
         if self.proxies:
-            options.add_argument("--proxy-server=http://%s" % self.proxy())
+            options.add_argument("--proxy-server=%s" % self.proxy())
         browser_driver = webdriver.Chrome(chrome_options=options)
         browser_driver.set_page_load_timeout(self.timeout)
         browser_driver.set_script_timeout(self.timeout)
@@ -138,18 +146,21 @@ class Browser(object):
         create a phantomjs browser
         """
         desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
-        desired_capabilities["phantomjs.page.settings.userAgent"] = Browser.userAgent()
+        desired_capabilities["phantomjs.page.settings.userAgent"] = Browser.userAgent(
+        )
         desired_capabilities["phantomjs.page.settings.loadImages"] = False
         if self.proxies:
             proxy = webdriver.Proxy()
             proxy.proxy_type = ProxyType.MANUAL
             proxy.http_proxy = self.proxy()
-	    proxy.ssl_proxy = self.proxy()
+            proxy.ssl_proxy = self.proxy()
             proxy.add_to_capabilities(desired_capabilities)
-        browser_driver = webdriver.PhantomJS(executable_path=self.executable_path,
-                                             desired_capabilities=desired_capabilities,
-                                             service_args=['--ignore-ssl-errors=true',
-                                                           "--cookies-file=cookie.txt"])
+        browser_driver = webdriver.PhantomJS(
+            executable_path=self.executable_path,
+            desired_capabilities=desired_capabilities,
+            service_args=[
+                '--ignore-ssl-errors=true',
+                "--cookies-file=cookie.txt"])
         return browser_driver
 
     def Remote(self, _type):
@@ -158,14 +169,17 @@ class Browser(object):
         """
         desired_capabilities = eval("DesiredCapabilities.%s" % _type)
         desired_capabilities["phantomjs.page.settings.loadImages"] = False
+        proxy = None
         if self.proxies:
             proxy = webdriver.Proxy()
             proxy.proxy_type = ProxyType.MANUAL
             proxy.http_proxy = self.proxy()
             proxy.ssl_prpxy = self.proxy()
             proxy.add_to_capabilities(desired_capabilities)
-        browser_driver = webdriver.Remote(command_executor=self.executable_path,
-                                          desired_capabilities=desired_capabilities)
+        browser_driver = webdriver.Remote(
+            command_executor=self.executable_path,
+            desired_capabilities=desired_capabilities,
+            proxy=proxy)
         browser_driver.set_page_load_timeout(self.timeout)
         browser_driver.set_script_timeout(self.timeout)
         return browser_driver
@@ -184,7 +198,11 @@ class Browser(object):
         ActionChains(self.browser).move_to_element(elem).click().perform()
         time.sleep(self.interval_time)
 
-    def wait_for_element_loaded(self, type_name=None, elem_type=By.CLASS_NAME, wait_time=10):
+    def wait_for_element_loaded(
+            self,
+            type_name=None,
+            elem_type=By.CLASS_NAME,
+            wait_time=10):
         """
         等待元素加载
         :param type_name: 元素类型名称
@@ -281,7 +299,7 @@ class Browser(object):
             jscript = "window.scroll%s(%d,%d)" % (method, x, y)
         self.browser.execute_script(jscript)
         time.sleep(self.interval_time)
-    
+
     def screenshot(self, filename):
         """
         截屏
@@ -315,11 +333,11 @@ class Browser(object):
             self.browser.close()
             try:
                 self.browser.quit()
-            except:
+            except BaseException:
                 pass
             try:
                 self.browser.service.stop()
-            except:
+            except BaseException:
                 pass
             print("browser close successful")
             logging.info("***********关闭成功(close)**********")
@@ -354,15 +372,15 @@ class Browser(object):
         """
         try:
             self.browser.close()
-        except:
+        except BaseException:
             pass
         try:
             self.browser.quit()
-        except:
+        except BaseException:
             pass
         try:
             self.browser.service.stop()
-        except:
+        except BaseException:
             pass
 
 
@@ -391,12 +409,19 @@ def test_chrome():
     B.sleep_wait(2)
     print(B.page_source())
 
+
 def test_remote():
     """unittest"""
-    driver=Browser(browser_type="Remote-Chrome", headless=False, timeout=100,executable_path="http://127.0.0.1:4444/wd/hub")
-    driver.get("https://www.nike.com/cn/launch/t/air-max-95-premium-throwback-future/")
+    driver = Browser(
+        browser_type="Remote-Chrome",
+        headless=False,
+        timeout=100,
+        executable_path="http://127.0.0.1:4444/wd/hub")
+    driver.get(
+        "https://www.nike.com/cn/launch/t/air-max-95-premium-throwback-future/")
     print(driver.browser.title.encode("utf8"))
     driver.close()
+
 
 if __name__ == '__main__':
     # test_firefox()

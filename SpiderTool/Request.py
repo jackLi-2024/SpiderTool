@@ -6,7 +6,7 @@ File:   Request.py
 Author: Lijiacai (1050518702@qq.com)
 Date: 2018-11-20
 Description:
-    The crawler crawls requests, which mainly extend the retry mechanism, 
+    The crawler crawls requests, which mainly extend the retry mechanism,
     can retry the connection for the proxy cause the connection failure.
     And if the same page needs cookie and access, the same spider can be used.
 """
@@ -39,15 +39,15 @@ class Request(object):
         """
         get proxy
         If there are other agents, change the function here.
-        :return: return a ip：12.23.88.23:2345
+        :return: return a ip：http://12.23.88.23:2345
         """
         if not self.proxies:
             one_proxy = None
-        elif type(self.proxies) == list:
+        elif isinstance(self.proxies, list):
             one_proxy = random.choice(self.proxies)
         else:
             one_proxy = None
-        #if one_proxy == None:
+        # if one_proxy == None:
             #logging.info("self ip")
         return one_proxy
 
@@ -95,37 +95,49 @@ class Request(object):
         for try_time in range(self.try_time):
             one_proxy_ = self.proxy()
             one_proxy = one_proxy_
-            if one_proxy == None:
+            if one_proxy is None:
                 pass
-		#logging.info("ip-->None")
+                # logging.info("ip-->None")
             else:
-		#logging.info("ip-->%s" % one_proxy)
-                one_proxy = {"http": "http://%s" % one_proxy, "https": "http://%s" % one_proxy}
-		
+                #logging.info("ip-->%s" % one_proxy)
+                one_proxy = {
+                    "http": "%s" %
+                    one_proxy,
+                    "https": "%s" %
+                    one_proxy}
+
             try:
-                response = self.session.request(method, url,
-                                                params=params, data=data, headers=headers,
-                                                cookies=cookies,
-                                                files=files,
-                                                auth=auth, timeout=timeout,
-                                                allow_redirects=allow_redirects,
-                                                proxies=one_proxy,
-                                                hooks=hooks, stream=stream, verify=verify,
-                                                cert=cert,
-                                                json=json)
+                response = self.session.request(
+                    method,
+                    url,
+                    params=params,
+                    data=data,
+                    headers=headers,
+                    cookies=cookies,
+                    files=files,
+                    auth=auth,
+                    timeout=timeout,
+                    allow_redirects=allow_redirects,
+                    proxies=one_proxy,
+                    hooks=hooks,
+                    stream=stream,
+                    verify=verify,
+                    cert=cert,
+                    json=json)
                 if str(response.status_code) > response_status:
                     #logging.info("response status:[%s]" % str(response.status_code))
                     continue
                 response.proxy = one_proxy_
                 return response
             except Exception as e:
-                pass
-                #logging.exception("%s network error:%s" % (time.asctime(), str(e)))
+                if try_time == (self.try_time - 1):
+                    logging.exception(
+                        "%s network error:%s" %
+                        (time.asctime(), str(e)))
             time.sleep(self.frequence)
         response = Response()
         response.proxy = "Response Error"
         return response
-	
 
     def get(self, url, **kwargs):
         r"""Sends a GET request. Returns :class:`Response` object.
